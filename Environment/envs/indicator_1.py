@@ -10,7 +10,7 @@ from Environment.core import Env
 plt.style.use('dark_background')
 mpl.rcParams.update(
     {
-        "font.size": 15,
+        "font.size": 10,
         "axes.labelsize": 15,
         "lines.linewidth": 1,
         "lines.markersize": 8
@@ -267,20 +267,19 @@ class Indicator_1(Env):
         self._az[-1].plot([self._iteration, self._iteration + 1], [rsi, rsi], color='blue')
         self._ay[0].set_ylabel('CCI')
         self._az[0].set_ylabel('RSI')
-
         ymin, ymax = self._ax[-1].get_ylim()
         yrange = ymax - ymin
         if self.Sell_render:
-            self._ax[-1].scatter(self._iteration + 0.5, bid + 0.03 *
+            self._ax[-1].scatter(self._iteration + 0.1, bid + 0.03 *
                                  yrange, color='orangered', marker='v')
         elif self.Buy_render:
-            self._ax[-1].scatter(self._iteration + 0.5, ask - 0.03 *
+            self._ax[-1].scatter(self._iteration + 0.1, ask - 0.03 *
                                  yrange, color='lawngreen', marker='^')
         if self.TP_render:
-            self._ax[-1].scatter(self._iteration + 0.5, bid + 0.03 *
+            self._ax[-1].scatter(self._iteration + 0.1, bid + 0.03 *
                                  yrange, color='gold', marker='.')
         elif self.SL_render:
-            self._ax[-1].scatter(self._iteration + 0.5, ask - 0.03 *
+            self._ax[-1].scatter(self._iteration + 0.1, ask - 0.03 *
                                  yrange, color='maroon', marker='.')
 
 
@@ -294,12 +293,11 @@ class Indicator_1(Env):
                      '  Action: ' + ['flat', 'long', 'short'][list(self._action).index(1)] +
                      '  Tick:' + "%.2f" % self._iteration)
         self._f.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
-
-        plt.xticks(range(self._iteration)[::5])
-        plt.xlim([max(0, self._iteration - 80.5), self._iteration + 0.5])
-
+        plt.xticks(range(self._iteration)[::10])
+        #plt.xlim([max(0, self._iteration
+        plt.xticks(rotation=90)
         plt.subplots_adjust(top=0.85)
-        plt.pause(0.00001) # 0.01
+        #plt.pause(0.00001) # 0.01
         if savefig:
             plt.savefig(filename)
 
