@@ -1,3 +1,4 @@
+%matplotlib notebook
 import pandas as pd
 import os
 import random
@@ -9,6 +10,9 @@ from Environment.gens.TA_Gen import TAStreamer
 from Environment.envs.indicator_1 import Indicator_1
 
 from Agent.duelling_dqn import DDDQNAgent
+from Agent.double_dqn import DDQNAgent
+from Agent.dqn import DQNAgent
+
 
 def World(filename=None,
         train_test = 'train',
@@ -22,7 +26,7 @@ def World(filename=None,
         batch_size = 64,
         train_interval = 10,
         learning_rate = 0.001,
-        render_show=False,
+        render_show=True,
         display=False,
         save_results=False
 ):
@@ -65,6 +69,7 @@ def World(filename=None,
         for _ in range(memory_size):
             action = agent.act(state)
             next_state, reward, done, _ = environment.step(action)
+
             agent.observe(state, action, reward, next_state, done, warming_up=True)
         if display:
             print('completed mem allocation: ', time.time() - start)
@@ -136,6 +141,7 @@ def World(filename=None,
     while not done:
         action, q_values = agent.act(state, test=True)
         state, reward, done, info = environment.step(action)
+        #environment.render(savefig=True)
         if 'status' in info and info['status'] == 'Closed plot':
             done = True
         else:
@@ -146,7 +152,7 @@ def World(filename=None,
                 trade_list.append(calc_returns)
 
             if(render_show):
-                environment.render()
+                environment.render(savefig=True)
 
 
         q_values_list.append(q_values)
@@ -161,7 +167,6 @@ def World(filename=None,
     if save_results:
         trades_df.to_csv(r'./Results/trade_list.csv')
         action_policy_df.to_pickle(r'./Results/action_policy.pkl')
-
     if display:
         print("All done:", str(time.time() - start))
 
@@ -172,5 +177,5 @@ def World(filename=None,
 
 
 if __name__ == "__main__":
-    World(filename = r'./Data/ZTS_data.csv',save_results=True, episodes=10, display=True,  train_test='train')
+    World(filename = r'./Data/BTC-USD.csv',save_results=True, episodes=8, display=True,  train_test='train')
     # World()
